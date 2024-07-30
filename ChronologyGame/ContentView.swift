@@ -47,12 +47,16 @@ struct ContentView: View {
                 ScrollView(.horizontal) {
                     HStack {
                         // Dot at the start
-                        Circle()
-                            .fill(highlightedDropIndex == 0 ? Color.green : Color.gray)
-                            .frame(width: 30, height: 30)
-                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
-                            .padding(.horizontal, 4)
-                        
+                        if let draggingEvent = draggingEvent, highlightedDropIndex == 0 {
+                            eventView(draggingEvent)
+                        } else {
+                            Circle()
+                                .fill(highlightedDropIndex == 0 ? Color.green : Color.gray)
+                                .frame(width: 30, height: 30)
+                                .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
+                                .padding(.horizontal, 4)
+                        }
+
                         ForEach(0..<timeline.count, id: \.self) { index in
                             // Event in the timeline
                             VStack {
@@ -70,13 +74,16 @@ struct ContentView: View {
                             .padding(.horizontal, 4)
                             
                             // Dot between events
-                            Circle()
-                                .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
-                                .frame(width: 30, height: 30)
-                                .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
-                                .padding(.horizontal, 4)
+                            if let draggingEvent = draggingEvent, highlightedDropIndex == index + 1 {
+                                eventView(draggingEvent)
+                            } else {
+                                Circle()
+                                    .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
+                                    .frame(width: 30, height: 30)
+                                    .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
+                                    .padding(.horizontal, 4)
+                            }
                         }
-                        
                     }
                     .padding()
                 }
@@ -171,6 +178,9 @@ struct ContentView: View {
             events.remove(at: eventIndex)
         }
 
+        draggingEvent = nil
+        highlightedDropIndex = nil
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             placementResult = nil
             getNextEvent()
@@ -202,6 +212,18 @@ struct ContentView: View {
         score = 0
         gameEnded = false
         setupInitialEvent()
+    }
+
+    private func eventView(_ event: ChronologyEvent) -> some View {
+        VStack {
+            Text(event.description)
+            Text("\(event.year)")
+        }
+        .padding()
+        .background(Color.green)
+        .cornerRadius(10)
+        .foregroundColor(.white)
+        .padding(.horizontal, 4)
     }
 }
 
