@@ -10,68 +10,97 @@ struct ContentView: View {
     ]
     @State private var currentEvent: ChronologyEvent?
     @State private var placementResult: String?
+    @State private var score: Int = 0
+    @State private var gameEnded: Bool = false
 
     var body: some View {
         VStack {
-            Text("Chronology Game")
-                .font(.largeTitle)
-                .padding()
-
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(timeline) { event in
-                        VStack {
-                            Text(event.description)
-                            Text("\(event.year)")
-                        }
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(10)
-                        .foregroundColor(.white)
-                    }
-                }
-                .padding()
-            }
-
-            Spacer()
-
-            if let currentEvent = currentEvent {
+            if gameEnded {
                 VStack {
-                    Text(currentEvent.description)
-                    Text("\(currentEvent.year)")
-                }
-                .padding()
-                .background(Color.green)
-                .cornerRadius(10)
-                .foregroundColor(.white)
-                .padding()
-                
-                Text("Place this event:")
-                    .font(.headline)
+                    Text("Game Over")
+                        .font(.largeTitle)
+                        .padding()
+                    
+                    Text("Final Score: \(score)")
+                        .font(.title)
+                        .padding()
+
+                    Button(action: {
+                        resetGame()
+                    }) {
+                        Text("Play Again")
+                            .padding()
+                            .background(Color.orange)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                    }
                     .padding()
-                
-                HStack {
-                    ForEach(0...timeline.count, id: \.self) { index in
-                        Button(action: {
-                            placeEvent(at: index)
-                        }) {
-                            Text(index == timeline.count ? "End" : "\(index + 1)")
-                                .padding()
-                                .background(Color.orange)
-                                .cornerRadius(10)
-                                .foregroundColor(.white)
+                }
+            } else {
+                Text("Chronology Game")
+                    .font(.largeTitle)
+                    .padding()
+
+                Text("Score: \(score)")
+                    .font(.title)
+                    .padding()
+
+                ScrollView(.horizontal) {
+                    HStack {
+                        ForEach(timeline) { event in
+                            VStack {
+                                Text(event.description)
+                                Text("\(event.year)")
+                            }
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
                         }
-                        .padding(2)
+                    }
+                    .padding()
+                }
+
+                Spacer()
+
+                if let currentEvent = currentEvent {
+                    VStack {
+                        Text(currentEvent.description)
+                        Text("\(currentEvent.year)")
+                    }
+                    .padding()
+                    .background(Color.green)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+                    .padding()
+                    
+                    Text("Place this event:")
+                        .font(.headline)
+                        .padding()
+                    
+                    HStack {
+                        ForEach(0...timeline.count, id: \.self) { index in
+                            Button(action: {
+                                placeEvent(at: index)
+                            }) {
+                                Text(index == timeline.count ? "End" : "\(index + 1)")
+                                    .padding()
+                                    .background(Color.orange)
+                                    .cornerRadius(10)
+                                    .foregroundColor(.white)
+                            }
+                            .padding(2)
+                        }
                     }
                 }
-            }
 
-            Spacer()
+                Spacer()
 
-            if let result = placementResult {
-                Text(result)
-                    .foregroundColor(result == "Correct!" ? .green : .red)
-                    .padding()
+                if let result = placementResult {
+                    Text(result)
+                        .foregroundColor(result == "Correct!" ? .green : .red)
+                        .padding()
+                }
             }
         }
         .onAppear(perform: setupInitialEvent)
@@ -107,8 +136,10 @@ struct ContentView: View {
 
         if correctPosition {
             placementResult = "Correct!"
+            score += 10 // Increase score for correct placement
         } else {
             placementResult = "Incorrect!"
+            score -= 5 // Decrease score for incorrect placement
         }
 
         if let index = events.firstIndex(where: { $0.id == event.id }) {
@@ -122,7 +153,24 @@ struct ContentView: View {
     }
 
     func getNextEvent() {
-        currentEvent = events.randomElement()
+        if events.isEmpty {
+            gameEnded = true
+        } else {
+            currentEvent = events.randomElement()
+        }
+    }
+
+    func resetGame() {
+        timeline = []
+        events = [
+            ChronologyEvent(description: "First Moon Landing", year: 1969),
+            ChronologyEvent(description: "Declaration of Independence", year: 1776),
+            ChronologyEvent(description: "Fall of the Berlin Wall", year: 1989),
+            ChronologyEvent(description: "Invention of the Telephone", year: 1876)
+        ]
+        score = 0
+        gameEnded = false
+        setupInitialEvent()
     }
 }
 
