@@ -1,66 +1,103 @@
-//
-//  ContentView.swift
-//  ChronologyGame
-//
-//  Created by Christopher Johnson on 7/30/24.
-//
-
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
+    @State private var timeline: [Event] = []
+    @State private var events: [Event] = [
+        Event(description: "First Moon Landing", year: 1969),
+        Event(description: "Declaration of Independence", year: 1776),
+        Event(description: "Fall of the Berlin Wall", year: 1989),
+        Event(description: "Invention of the Telephone", year: 1876)
+    ]
+    @State private var currentEvent: Event?
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        VStack {
+            Text("Chronology Game")
+                .font(.largeTitle)
+                .padding()
+            
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(timeline) { event in
+                        VStack {
+                            Text(event.description)
+                            Text("\(event.year)")
+                        }
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                        .foregroundColor(.white)
                     }
                 }
-                .onDelete(perform: deleteItems)
+                .padding()
             }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-#endif
-            .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+            
+            Spacer()
+            
+            if let currentEvent = currentEvent {
+                VStack {
+                    Text(currentEvent.description)
+                    Text("\(currentEvent.year)")
                 }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
+                .padding()
+                .background(Color.green)
+                .cornerRadius(10)
+                .foregroundColor(.white)
+                .padding()
+            }
+            
+            Spacer()
+            
+            Button(action: {
+                placeEvent()
+                getNextEvent()
+            }) {
+                Text("Place Event")
+                    .padding()
+                    .background(Color.orange)
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+            }
+            .padding()
+        }
+        .onAppear(perform: setupInitialEvent)
+    }
+    
+    func setupInitialEvent() {
+        currentEvent = events.randomElement()
+    }
+    
+    func placeEvent() {
+        guard let event = currentEvent else { return }
+        // Implement logic to place event in the correct position
+        if timeline.isEmpty {
+            timeline.append(event)
+        } else {
+            var inserted = false
+            for i in 0..<timeline.count {
+                if event.year < timeline[i].year {
+                    timeline.insert(event, at: i)
+                    inserted = true
+                    break
                 }
             }
-        } detail: {
-            Text("Select an item")
+            if !inserted {
+                timeline.append(event)
+            }
+        }
+        // Remove the placed event from the events list
+        if let index = events.firstIndex(where: { $0.id == event.id }) {
+            events.remove(at: index)
         }
     }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
-        }
+    
+    func getNextEvent() {
+        currentEvent = events.randomElement()
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
