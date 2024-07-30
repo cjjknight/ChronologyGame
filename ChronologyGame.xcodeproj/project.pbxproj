@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		8B231A722C599D9400EF63D2 /* ChronologyGameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A712C599D9400EF63D2 /* ChronologyGameApp.swift */; };
 		8B231A742C599D9400EF63D2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A732C599D9400EF63D2 /* ContentView.swift */; };
-		8B231A762C599D9400EF63D2 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A752C599D9400EF63D2 /* Item.swift */; };
 		8B231A782C599D9500EF63D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B231A772C599D9500EF63D2 /* Assets.xcassets */; };
 		8B231A7C2C599D9500EF63D2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B231A7B2C599D9500EF63D2 /* Preview Assets.xcassets */; };
 		8B231A862C599D9500EF63D2 /* ChronologyGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A852C599D9500EF63D2 /* ChronologyGameTests.swift */; };
 		8B231A902C599D9500EF63D2 /* ChronologyGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A8F2C599D9500EF63D2 /* ChronologyGameUITests.swift */; };
 		8B231A922C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A912C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift */; };
+		8B231A9F2C59A1EB00EF63D2 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A9E2C59A1EB00EF63D2 /* EventData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,7 +38,6 @@
 		8B231A6E2C599D9400EF63D2 /* ChronologyGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronologyGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B231A712C599D9400EF63D2 /* ChronologyGameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronologyGameApp.swift; sourceTree = "<group>"; };
 		8B231A732C599D9400EF63D2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8B231A752C599D9400EF63D2 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		8B231A772C599D9500EF63D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8B231A792C599D9500EF63D2 /* ChronologyGame.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChronologyGame.entitlements; sourceTree = "<group>"; };
 		8B231A7B2C599D9500EF63D2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		8B231A8B2C599D9500EF63D2 /* ChronologyGameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChronologyGameUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B231A8F2C599D9500EF63D2 /* ChronologyGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronologyGameUITests.swift; sourceTree = "<group>"; };
 		8B231A912C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronologyGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		8B231A9E2C59A1EB00EF63D2 /* EventData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,7 +99,7 @@
 			children = (
 				8B231A712C599D9400EF63D2 /* ChronologyGameApp.swift */,
 				8B231A732C599D9400EF63D2 /* ContentView.swift */,
-				8B231A752C599D9400EF63D2 /* Item.swift */,
+				8B231A9E2C59A1EB00EF63D2 /* EventData.swift */,
 				8B231A772C599D9500EF63D2 /* Assets.xcassets */,
 				8B231A792C599D9500EF63D2 /* ChronologyGame.entitlements */,
 				8B231A7A2C599D9500EF63D2 /* Preview Content */,
@@ -263,7 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B231A742C599D9400EF63D2 /* ContentView.swift in Sources */,
-				8B231A762C599D9400EF63D2 /* Item.swift in Sources */,
+				8B231A9F2C59A1EB00EF63D2 /* EventData.swift in Sources */,
 				8B231A722C599D9400EF63D2 /* ChronologyGameApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

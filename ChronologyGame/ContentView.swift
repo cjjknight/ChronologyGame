@@ -2,12 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var timeline: [ChronologyEvent] = []
-    @State private var events: [ChronologyEvent] = [
-        ChronologyEvent(description: "First Moon Landing", year: 1969),
-        ChronologyEvent(description: "Declaration of Independence", year: 1776),
-        ChronologyEvent(description: "Fall of the Berlin Wall", year: 1989),
-        ChronologyEvent(description: "Invention of the Telephone", year: 1876)
-    ]
+    @State private var events: [ChronologyEvent] = initialEvents
     @State private var currentEvent: ChronologyEvent?
     @State private var placementResult: String?
     @State private var score: Int = 0
@@ -167,12 +162,7 @@ struct ContentView: View {
 
     func resetGame() {
         timeline = []
-        events = [
-            ChronologyEvent(description: "First Moon Landing", year: 1969),
-            ChronologyEvent(description: "Declaration of Independence", year: 1776),
-            ChronologyEvent(description: "Fall of the Berlin Wall", year: 1989),
-            ChronologyEvent(description: "Invention of the Telephone", year: 1876)
-        ]
+        events = initialEvents
         shuffleEvents()
         score = 0
         gameEnded = false
