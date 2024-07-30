@@ -1,21 +1,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var timeline: [Event] = []
-    @State private var events: [Event] = [
-        Event(description: "First Moon Landing", year: 1969),
-        Event(description: "Declaration of Independence", year: 1776),
-        Event(description: "Fall of the Berlin Wall", year: 1989),
-        Event(description: "Invention of the Telephone", year: 1876)
+    @State private var timeline: [ChronologyEvent] = []
+    @State private var events: [ChronologyEvent] = [
+        ChronologyEvent(description: "First Moon Landing", year: 1969),
+        ChronologyEvent(description: "Declaration of Independence", year: 1776),
+        ChronologyEvent(description: "Fall of the Berlin Wall", year: 1989),
+        ChronologyEvent(description: "Invention of the Telephone", year: 1876)
     ]
-    @State private var currentEvent: Event?
-    
+    @State private var currentEvent: ChronologyEvent?
+    @State private var placementResult: String?
+
     var body: some View {
         VStack {
             Text("Chronology Game")
                 .font(.largeTitle)
                 .padding()
-            
+
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(timeline) { event in
@@ -31,9 +32,9 @@ struct ContentView: View {
                 }
                 .padding()
             }
-            
+
             Spacer()
-            
+
             if let currentEvent = currentEvent {
                 VStack {
                     Text(currentEvent.description)
@@ -44,53 +45,82 @@ struct ContentView: View {
                 .cornerRadius(10)
                 .foregroundColor(.white)
                 .padding()
-            }
-            
-            Spacer()
-            
-            Button(action: {
-                placeEvent()
-                getNextEvent()
-            }) {
-                Text("Place Event")
+                
+                Text("Place this event:")
+                    .font(.headline)
                     .padding()
-                    .background(Color.orange)
-                    .cornerRadius(10)
-                    .foregroundColor(.white)
+                
+                HStack {
+                    ForEach(0...timeline.count, id: \.self) { index in
+                        Button(action: {
+                            placeEvent(at: index)
+                        }) {
+                            Text(index == timeline.count ? "End" : "\(index + 1)")
+                                .padding()
+                                .background(Color.orange)
+                                .cornerRadius(10)
+                                .foregroundColor(.white)
+                        }
+                        .padding(2)
+                    }
+                }
             }
-            .padding()
+
+            Spacer()
+
+            if let result = placementResult {
+                Text(result)
+                    .foregroundColor(result == "Correct!" ? .green : .red)
+                    .padding()
+            }
         }
         .onAppear(perform: setupInitialEvent)
     }
-    
+
     func setupInitialEvent() {
         currentEvent = events.randomElement()
     }
-    
-    func placeEvent() {
+
+    func placeEvent(at index: Int) {
         guard let event = currentEvent else { return }
-        // Implement logic to place event in the correct position
-        if timeline.isEmpty {
+
+        var correctPosition = false
+        if timeline.isEmpty || index == timeline.count {
             timeline.append(event)
-        } else {
-            var inserted = false
-            for i in 0..<timeline.count {
-                if event.year < timeline[i].year {
-                    timeline.insert(event, at: i)
-                    inserted = true
-                    break
-                }
+            correctPosition = true
+        } else if index == 0 {
+            if event.year < timeline.first!.year {
+                timeline.insert(event, at: 0)
+                correctPosition = true
             }
-            if !inserted {
+        } else if index == timeline.count {
+            if event.year > timeline.last!.year {
                 timeline.append(event)
+                correctPosition = true
+            }
+        } else {
+            if event.year > timeline[index - 1].year && event.year < timeline[index].year {
+                timeline.insert(event, at: index)
+                correctPosition = true
             }
         }
-        // Remove the placed event from the events list
+
+        if correctPosition {
+            placementResult = "Correct!"
+        } else {
+            placementResult = "Incorrect!"
+        }
+
         if let index = events.firstIndex(where: { $0.id == event.id }) {
             events.remove(at: index)
         }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            placementResult = nil
+            getNextEvent()
+        }
     }
-    
+
     func getNextEvent() {
         currentEvent = events.randomElement()
     }
