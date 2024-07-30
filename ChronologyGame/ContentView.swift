@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @State private var timeline: [ChronologyEvent] = []
@@ -7,6 +8,8 @@ struct ContentView: View {
     @State private var placementResult: String?
     @State private var score: Int = 0
     @State private var gameEnded: Bool = false
+    @State private var draggingEvent: ChronologyEvent?
+    @State private var dropIndex: Int?
 
     var body: some View {
         VStack {
@@ -42,16 +45,43 @@ struct ContentView: View {
 
                 ScrollView(.horizontal) {
                     HStack {
-                        ForEach(timeline) { event in
+                        // Dot at the start
+                        Circle()
+                            .fill(Color.gray)
+                            .frame(width: 20, height: 20)
+                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                            .padding(.horizontal, 4)
+                        
+                        ForEach(0..<timeline.count, id: \.self) { index in
+                            // Event in the timeline
                             VStack {
-                                Text(event.description)
-                                Text("\(event.year)")
+                                Text(timeline[index].description)
+                                Text("\(timeline[index].year)")
                             }
                             .padding()
                             .background(Color.blue)
                             .cornerRadius(10)
                             .foregroundColor(.white)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.blue, lineWidth: 2)
+                            )
+                            .padding(.horizontal, 4)
+                            
+                            // Dot between events
+                            Circle()
+                                .fill(Color.gray)
+                                .frame(width: 20, height: 20)
+                                .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                                .padding(.horizontal, 4)
                         }
+                        
+                        // Dot at the end
+                        Circle()
+                            .fill(Color.gray)
+                            .frame(width: 20, height: 20)
+                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: timeline.count, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                            .padding(.horizontal, 4)
                     }
                     .padding()
                 }
@@ -68,25 +98,27 @@ struct ContentView: View {
                     .cornerRadius(10)
                     .foregroundColor(.white)
                     .padding()
+                    .onDrag {
+                        self.draggingEvent = currentEvent
+                        return NSItemProvider(object: NSString(string: currentEvent.description))
+                    }
                     
-                    Text("Place this event:")
+                    Text("Drag this event to the correct position in the timeline and click Submit")
                         .font(.headline)
                         .padding()
                     
-                    HStack {
-                        ForEach(0...timeline.count, id: \.self) { index in
-                            Button(action: {
-                                placeEvent(at: index)
-                            }) {
-                                Text(index == timeline.count ? "End" : "\(index + 1)")
-                                    .padding()
-                                    .background(Color.orange)
-                                    .cornerRadius(10)
-                                    .foregroundColor(.white)
-                            }
-                            .padding(2)
+                    Button(action: {
+                        if let dropIndex = dropIndex {
+                            placeEvent(at: dropIndex)
                         }
+                    }) {
+                        Text("Submit")
+                            .padding()
+                            .background(Color.orange)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
                     }
+                    .padding()
                 }
 
                 Spacer()
@@ -103,23 +135,24 @@ struct ContentView: View {
 
     func setupInitialEvent() {
         shuffleEvents()
+        if let firstEvent = events.randomElement() {
+            timeline.append(firstEvent)
+            events.removeAll { $0.id == firstEvent.id }
+        }
         currentEvent = events.randomElement()
     }
 
     func placeEvent(at index: Int) {
-        guard let event = currentEvent else { return }
+        guard let event = draggingEvent else { return }
 
         var correctPosition = false
-        if timeline.isEmpty || index == timeline.count {
-            timeline.append(event)
-            correctPosition = true
-        } else if index == 0 {
-            if event.year < timeline.first!.year {
+        if index == 0 {
+            if event.year < timeline.first?.year ?? Int.max {
                 timeline.insert(event, at: 0)
                 correctPosition = true
             }
         } else if index == timeline.count {
-            if event.year > timeline.last!.year {
+            if event.year > timeline.last?.year ?? Int.min {
                 timeline.append(event)
                 correctPosition = true
             }
@@ -138,8 +171,8 @@ struct ContentView: View {
             score -= 5 // Decrease score for incorrect placement
         }
 
-        if let index = events.firstIndex(where: { $0.id == event.id }) {
-            events.remove(at: index)
+        if let eventIndex = events.firstIndex(where: { $0.id == event.id }) {
+            events.remove(at: eventIndex)
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -148,11 +181,17 @@ struct ContentView: View {
         }
     }
 
+    func handleDrop(dropIndex: Int) {
+        self.dropIndex = dropIndex
+    }
+
     func getNextEvent() {
         if events.isEmpty {
             gameEnded = true
         } else {
             currentEvent = events.randomElement()
+            dropIndex = nil
+            draggingEvent = nil
         }
     }
 
@@ -167,6 +206,27 @@ struct ContentView: View {
         score = 0
         gameEnded = false
         setupInitialEvent()
+    }
+}
+
+struct DropViewDelegate: DropDelegate {
+    @Binding var currentEvent: ChronologyEvent?
+    @Binding var timeline: [ChronologyEvent]
+    var dropIndex: Int
+    @Binding var dropTargetIndex: Int?
+    var onDrop: (Int) -> Void
+
+    func performDrop(info: DropInfo) -> Bool {
+        onDrop(dropIndex)
+        return true
+    }
+
+    func dropEntered(info: DropInfo) {
+        dropTargetIndex = dropIndex
+    }
+
+    func dropExited(info: DropInfo) {
+        dropTargetIndex = nil
     }
 }
 
