@@ -58,30 +58,32 @@ struct ContentView: View {
                         }
 
                         ForEach(0..<timeline.count, id: \.self) { index in
-                            // Event in the timeline
-                            VStack {
-                                Text(timeline[index].description)
-                                Text("\(timeline[index].year)")
-                            }
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(10)
-                            .foregroundColor(.white)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.blue, lineWidth: 2)
-                            )
-                            .padding(.horizontal, 4)
-                            
-                            // Dot between events
-                            if let draggingEvent = draggingEvent, highlightedDropIndex == index + 1 {
-                                eventView(draggingEvent)
-                            } else {
-                                Circle()
-                                    .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
-                                    .frame(width: 30, height: 30)
-                                    .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
-                                    .padding(.horizontal, 4)
+                            HStack {
+                                // Event in the timeline
+                                VStack {
+                                    Text(timeline[index].description)
+                                    Text("\(timeline[index].year)")
+                                }
+                                .padding()
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                                .foregroundColor(.white)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(Color.blue, lineWidth: 2)
+                                )
+                                .padding(.horizontal, 4)
+                                
+                                // Dot between events
+                                if let draggingEvent = draggingEvent, highlightedDropIndex == index + 1 {
+                                    eventView(draggingEvent)
+                                } else {
+                                    Circle()
+                                        .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
+                                        .frame(width: 30, height: 30)
+                                        .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
+                                        .padding(.horizontal, 4)
+                                }
                             }
                         }
                     }
@@ -93,7 +95,6 @@ struct ContentView: View {
                 if let currentEvent = currentEvent {
                     VStack {
                         Text(currentEvent.description)
-                        Text("\(currentEvent.year)")
                     }
                     .padding()
                     .background(Color.green)
@@ -217,7 +218,6 @@ struct ContentView: View {
     private func eventView(_ event: ChronologyEvent) -> some View {
         VStack {
             Text(event.description)
-            Text("\(event.year)")
         }
         .padding()
         .background(Color.green)
