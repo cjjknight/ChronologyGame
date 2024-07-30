@@ -10,6 +10,7 @@ struct ContentView: View {
     @State private var gameEnded: Bool = false
     @State private var draggingEvent: ChronologyEvent?
     @State private var dropIndex: Int?
+    @State private var highlightedDropIndex: Int?
 
     var body: some View {
         VStack {
@@ -47,9 +48,9 @@ struct ContentView: View {
                     HStack {
                         // Dot at the start
                         Circle()
-                            .fill(Color.gray)
-                            .frame(width: 20, height: 20)
-                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                            .fill(highlightedDropIndex == 0 ? Color.green : Color.gray)
+                            .frame(width: 30, height: 30)
+                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
                             .padding(.horizontal, 4)
                         
                         ForEach(0..<timeline.count, id: \.self) { index in
@@ -70,17 +71,17 @@ struct ContentView: View {
                             
                             // Dot between events
                             Circle()
-                                .fill(Color.gray)
-                                .frame(width: 20, height: 20)
-                                .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                                .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
+                                .frame(width: 30, height: 30)
+                                .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
                                 .padding(.horizontal, 4)
                         }
                         
                         // Dot at the end
                         Circle()
-                            .fill(Color.gray)
-                            .frame(width: 20, height: 20)
-                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: timeline.count, dropTargetIndex: $dropIndex, onDrop: handleDrop))
+                            .fill(highlightedDropIndex == timeline.count ? Color.green : Color.gray)
+                            .frame(width: 30, height: 30)
+                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: timeline.count, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
                             .padding(.horizontal, 4)
                     }
                     .padding()
@@ -110,6 +111,7 @@ struct ContentView: View {
                     Button(action: {
                         if let dropIndex = dropIndex {
                             placeEvent(at: dropIndex)
+                            highlightedDropIndex = nil
                         }
                     }) {
                         Text("Submit")
@@ -214,6 +216,7 @@ struct DropViewDelegate: DropDelegate {
     @Binding var timeline: [ChronologyEvent]
     var dropIndex: Int
     @Binding var dropTargetIndex: Int?
+    @Binding var highlightedDropIndex: Int?
     var onDrop: (Int) -> Void
 
     func performDrop(info: DropInfo) -> Bool {
@@ -223,10 +226,15 @@ struct DropViewDelegate: DropDelegate {
 
     func dropEntered(info: DropInfo) {
         dropTargetIndex = dropIndex
+        highlightedDropIndex = dropIndex
     }
 
     func dropExited(info: DropInfo) {
-        dropTargetIndex = nil
+        dropTargetIndex = dropIndex // Keep the drop target index highlighted
+    }
+
+    func validateDrop(info: DropInfo) -> Bool {
+        return true
     }
 }
 
