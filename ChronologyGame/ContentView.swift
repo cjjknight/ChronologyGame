@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     @State private var timeline: [ChronologyEvent] = []
-    @State private var events: [ChronologyEvent] = initialEvents
+    @State private var events: [ChronologyEvent] = allEvents
     @State private var currentEvent: ChronologyEvent?
     @State private var placementResult: String?
     @State private var score: Int = 0
@@ -208,7 +208,7 @@ struct ContentView: View {
 
     func resetGame() {
         timeline = []
-        events = initialEvents
+        events = allEvents
         shuffleEvents()
         score = 0
         gameEnded = false
