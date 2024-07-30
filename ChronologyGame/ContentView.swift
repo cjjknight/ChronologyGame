@@ -77,12 +77,6 @@ struct ContentView: View {
                                 .padding(.horizontal, 4)
                         }
                         
-                        // Dot at the end
-                        Circle()
-                            .fill(highlightedDropIndex == timeline.count ? Color.green : Color.gray)
-                            .frame(width: 30, height: 30)
-                            .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: timeline.count, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
-                            .padding(.horizontal, 4)
                     }
                     .padding()
                 }
