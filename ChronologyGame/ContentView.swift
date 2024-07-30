@@ -107,6 +107,7 @@ struct ContentView: View {
     }
 
     func setupInitialEvent() {
+        shuffleEvents()
         currentEvent = events.randomElement()
     }
 
@@ -160,6 +161,10 @@ struct ContentView: View {
         }
     }
 
+    func shuffleEvents() {
+        events.shuffle()
+    }
+
     func resetGame() {
         timeline = []
         events = [
@@ -168,6 +173,7 @@ struct ContentView: View {
             ChronologyEvent(description: "Fall of the Berlin Wall", year: 1989),
             ChronologyEvent(description: "Invention of the Telephone", year: 1876)
         ]
+        shuffleEvents()
         score = 0
         gameEnded = false
         setupInitialEvent()
