@@ -15,6 +15,7 @@
 		8B231A902C599D9500EF63D2 /* ChronologyGameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A8F2C599D9500EF63D2 /* ChronologyGameUITests.swift */; };
 		8B231A922C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A912C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift */; };
 		8B231A9F2C59A1EB00EF63D2 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B231A9E2C59A1EB00EF63D2 /* EventData.swift */; };
+		8B2E7D3A2C5BE4DE003E87A5 /* InstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2E7D392C5BE4DE003E87A5 /* InstructionsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		8B231A8F2C599D9500EF63D2 /* ChronologyGameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronologyGameUITests.swift; sourceTree = "<group>"; };
 		8B231A912C599D9500EF63D2 /* ChronologyGameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChronologyGameUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		8B231A9E2C59A1EB00EF63D2 /* EventData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
+		8B2E7D392C5BE4DE003E87A5 /* InstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 			children = (
 				8B231A712C599D9400EF63D2 /* ChronologyGameApp.swift */,
 				8B231A732C599D9400EF63D2 /* ContentView.swift */,
+				8B2E7D392C5BE4DE003E87A5 /* InstructionsView.swift */,
 				8B231A9E2C59A1EB00EF63D2 /* EventData.swift */,
 				8B231A772C599D9500EF63D2 /* Assets.xcassets */,
 				8B231A792C599D9500EF63D2 /* ChronologyGame.entitlements */,
@@ -263,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B231A742C599D9400EF63D2 /* ContentView.swift in Sources */,
+				8B2E7D3A2C5BE4DE003E87A5 /* InstructionsView.swift in Sources */,
 				8B231A9F2C59A1EB00EF63D2 /* EventData.swift in Sources */,
 				8B231A722C599D9400EF63D2 /* ChronologyGameApp.swift in Sources */,
 			);

@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var draggingEvent: ChronologyEvent?
     @State private var dropIndex: Int?
     @State private var highlightedDropIndex: Int?
+    @State private var showingInstructions = false
 
     var body: some View {
         VStack {
@@ -36,6 +37,20 @@ struct ContentView: View {
                     .padding()
                 }
             } else {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showingInstructions.toggle()
+                    }) {
+                        Image(systemName: "questionmark.circle")
+                            .font(.largeTitle)
+                            .padding()
+                    }
+                    .sheet(isPresented: $showingInstructions) {
+                        InstructionsView()
+                    }
+                }
+
                 Text("Chronology Game")
                     .font(.largeTitle)
                     .padding()
