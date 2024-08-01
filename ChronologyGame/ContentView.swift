@@ -216,7 +216,7 @@ struct ContentView: View {
         draggingEvent = nil
         highlightedDropIndex = nil
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { // Reduce delay to 0.5 seconds
             placementResult = nil
             getNextEvent()
         }
