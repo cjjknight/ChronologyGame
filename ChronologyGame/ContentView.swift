@@ -121,20 +121,6 @@ struct ContentView: View {
                         self.draggingEvent = currentEvent
                         return NSItemProvider(object: NSString(string: currentEvent.description))
                     }
-
-                    Button(action: {
-                        if let dropIndex = dropIndex {
-                            placeEvent(at: dropIndex)
-                            highlightedDropIndex = nil
-                        }
-                    }) {
-                        Text("Submit")
-                            .padding()
-                            .background(Color.orange)
-                            .cornerRadius(10)
-                            .foregroundColor(.white)
-                    }
-                    .padding()
                 }
 
                 if let mostRecentEvent = mostRecentEvent {
@@ -159,6 +145,21 @@ struct ContentView: View {
                     Text(result)
                         .foregroundColor(result == "Correct!" ? .green : .red)
                         .padding()
+                }
+                
+                if let dropIndex = dropIndex {
+                    Button(action: {
+                        placeEvent(at: dropIndex)
+                        highlightedDropIndex = nil
+                        self.dropIndex = nil // Hide submit button after placing the event
+                    }) {
+                        Text("Submit")
+                            .padding()
+                            .background(Color.orange)
+                            .cornerRadius(10)
+                            .foregroundColor(.white)
+                    }
+                    .padding()
                 }
             }
         }
