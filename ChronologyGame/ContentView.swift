@@ -67,8 +67,9 @@ struct ContentView: View {
                             eventView(draggingEvent)
                         } else {
                             Circle()
-                                .fill(highlightedDropIndex == 0 ? Color.green : Color.gray)
-                                .frame(width: 30, height: 30)
+                                .fill(highlightedDropIndex == 0 ? Color.green : Color.gray.opacity(0.3))
+                                .frame(width: 10, height: 10) // One-third the size
+                                .contentShape(Rectangle().size(width: 50, height: 50)) // Increase hit area
                                 .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: 0, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
                                 .padding(.horizontal, 4)
                         }
@@ -95,8 +96,9 @@ struct ContentView: View {
                                     eventView(draggingEvent)
                                 } else {
                                     Circle()
-                                        .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray)
-                                        .frame(width: 30, height: 30)
+                                        .fill(highlightedDropIndex == index + 1 ? Color.green : Color.gray.opacity(0.3))
+                                        .frame(width: 10, height: 10) // One-third the size
+                                        .contentShape(Rectangle().size(width: 50, height: 50)) // Increase hit area
                                         .onDrop(of: [UTType.plainText.identifier], delegate: DropViewDelegate(currentEvent: $currentEvent, timeline: $timeline, dropIndex: index + 1, dropTargetIndex: $dropIndex, highlightedDropIndex: $highlightedDropIndex, onDrop: handleDrop))
                                         .padding(.horizontal, 4)
                                 }
