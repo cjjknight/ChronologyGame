@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var dropIndex: Int?
     @State private var highlightedDropIndex: Int?
     @State private var showingInstructions = false
+    @State private var mostRecentEvent: ChronologyEvent?
 
     var body: some View {
         VStack {
@@ -38,7 +39,6 @@ struct ContentView: View {
                 }
             } else {
                 HStack {
-                    Spacer()
                     Button(action: {
                         showingInstructions.toggle()
                     }) {
@@ -49,6 +49,7 @@ struct ContentView: View {
                     .sheet(isPresented: $showingInstructions) {
                         InstructionsView()
                     }
+                    Spacer()
                 }
 
                 Text("Chronology Game")
@@ -120,11 +121,7 @@ struct ContentView: View {
                         self.draggingEvent = currentEvent
                         return NSItemProvider(object: NSString(string: currentEvent.description))
                     }
-                    
-                    Text("Drag this event to the correct position in the timeline and click Submit")
-                        .font(.headline)
-                        .padding()
-                    
+
                     Button(action: {
                         if let dropIndex = dropIndex {
                             placeEvent(at: dropIndex)
@@ -138,6 +135,22 @@ struct ContentView: View {
                             .foregroundColor(.white)
                     }
                     .padding()
+                }
+
+                if let mostRecentEvent = mostRecentEvent {
+                    VStack(alignment: .leading) {
+                        Text(mostRecentEvent.description)
+                            .font(.headline)
+                            .padding(.top, 10)
+                        
+                        Text(mostRecentEvent.details)
+                            .font(.body)
+                            .padding(.top, 5)
+                    }
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
                 }
 
                 Spacer()
@@ -157,6 +170,7 @@ struct ContentView: View {
         if let firstEvent = events.randomElement() {
             timeline.append(firstEvent)
             events.removeAll { $0.id == firstEvent.id }
+            mostRecentEvent = firstEvent
         }
         currentEvent = events.randomElement()
     }
@@ -189,6 +203,8 @@ struct ContentView: View {
             placementResult = "Incorrect!"
             score -= 5 // Decrease score for incorrect placement
         }
+
+        mostRecentEvent = event // Update most recent event
 
         if let eventIndex = events.firstIndex(where: { $0.id == event.id }) {
             events.remove(at: eventIndex)
